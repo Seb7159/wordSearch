@@ -1,3 +1,6 @@
+from multiprocessing import Pool
+import itertools
+
 class WordSearch(object):
     def __init__(self, grid):
         self.grid = grid
@@ -58,20 +61,28 @@ class WordSearch(object):
 
         # Finally return the same method call for the first half and second half from both top to bottom and left to right
         if direction == 0:
-            return (self.searchWordInGrid(word[:int(mid)], i, j, direction, actual)
-                    and self.searchWordInGrid(word[int(mid):], i + addCoord, j, direction, actual)
+            return (self.searchWordInGrid(word[:int(mid)], i, j, direction)
+                    and self.searchWordInGrid(word[int(mid):], i + addCoord, j, direction)
                 )
         else:
-            return (self.searchWordInGrid(word[:int(mid)], i, j, direction, actual)
-                    and self.searchWordInGrid(word[int(mid):], i, j + addCoord, direction, actual)
+            return (self.searchWordInGrid(word[:int(mid)], i, j, direction)
+                    and self.searchWordInGrid(word[int(mid):], i, j + addCoord, direction)
                 )
 
+
+    def wordPresent(self, params):
+        i, j, word = params
+        if self.searchWordInGrid(word, i, j, 0) is True or self.searchWordInGrid(word, i, j, 1) is True:
+            return True
+        return False
 
     def is_present(self, word):
         # For each coordinates i and j in the grid, check if the word exists
         for i in range(self.ROW_LENGTH):
             for j in range(self.ROW_LENGTH):
-                if self.searchWordInGrid(word, i, j, 0) is True or self.searchWordInGrid(word, i, j, 1) is True:
+                params = i, j, word
+                
+                if self.wordPresent(params) is True:
                     return True
         return False
 
