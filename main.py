@@ -7,33 +7,56 @@ class WordSearch(object):
         self.DIRECTION_Y = [0, 1]
 
     def searchWordInGrid(self, word, i, j):
+        # Recursive heap approach 
+        # Return true if word is empty
+        if len(word) == 0:
+            return True
+
         # Check if first character is the same as the word's first character
         if grid[i][0][j] is not word[0]:
             return False
-        # For each direction (from top to bottom, from left to right)
-        for d in range(len(self.DIRECTION_X)):
-            # Define temporary coordinates new_i, new_j, then a flag to check to word at the end
-            new_i = i
-            new_j = j
-            flag = True
-            # From the second character onwards, check if they correspond
-            for k in range(1, len(word)):
-                # Increment temporary coordinates
-                new_i += self.DIRECTION_X[d]
-                new_j += self.DIRECTION_Y[d]
-                # In case temporary coordinates go out of bounds
-                if new_i >= len(grid) or new_j >= len(grid):
-                    flag = False
-                    break
-                # Check if they correspond
-                if grid[new_i][0][new_j] is not word[k]:
-                    flag = False
-                    break
-            # If the flag stood on True, it means the word has been found
-            if flag is True:
-                return True
-        # If nothing has been found, return False
-        return False
+        i += 1
+        word = word[1:]
+
+        # Optimisation to reduce the number of full word searches by also checking the last character of the string
+        # Check if indexes won't get out of bounds
+        i_oob = i+len(word)-1 >= self.ROW_LENGTH
+        j_oob = j+len(word)-1 >= self.ROW_LENGTH
+
+        # Now check if the last character of the word appears either at the bottom, or right relative to the start of the word in the grid
+        if i_oob is False:
+            i_end = grid[i+len(word)-1][0][j] is not word[:-1]
+        else:
+            i_end = False
+
+        if j_oob is False:
+            j_end = grid[i][0][j+len(word)-1] is not word[:-1]
+        else:
+            j_end = False
+
+        if i_end is False and j_end is False:
+            return False
+        j -= 1
+        word = word[:-1]
+
+        # If i overcomes or is equal to j, it means this is done
+        if i >= j:
+            return True
+
+        # Now calculate the middle of the word
+        mid = len(word)/2
+        if len(word)%2 == 1:
+            addCoord = int(mid+0.5)
+        else:
+            addCoord = int(mid)
+
+        # Finally return the same method call for the first half and second half from both top to bottom and left to right
+        return (self.searchWordInGrid(word[:int(mid)], i, j)
+                and (
+                        self.searchWordInGrid(word[int(mid):], i + addCoord, j)
+                        or self.searchWordInGrid(word[int(mid):], i, j + addCoord)
+                )
+            )
 
 
     def is_present(self, word):
