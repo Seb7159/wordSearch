@@ -69,9 +69,6 @@ class WordSearch(object):
                 )
 
 
-    isPresent = False
-
-
     def wordPresent(self, params):
         i, j, word = params
         if self.searchWordInGrid(word, i, j, 0) is True or self.searchWordInGrid(word, i, j, 1) is True:
@@ -84,16 +81,16 @@ class WordSearch(object):
 
     def is_present(self, word):
         # For each coordinates i and j in the grid, check if the word exists
-        isPresent = False
+        array = []
         for i in range(self.ROW_LENGTH):
             for j in range(self.ROW_LENGTH):
                 params = i, j, word
-                p = multiprocessing.Pool(processes=multiprocessing.cpu_count() - 1)
-                p.apply_async(self.wordPresent(params), params)
-                p.close()
-                p.join()
-                if isPresent is True:
-                    return True
+                array.append(params)
+        p = multiprocessing.Pool(processes=multiprocessing.cpu_count()-1)
+        result = p.map(self.wordPresent, array)
+        for n in result:
+            if n is True:
+                return True
         return False
 
 
@@ -111,10 +108,7 @@ def random_grid(LEN):
 # Defining grid to check and words to find
 
 words_to_find = ['DINOSAUR', 'YES', 'PEXIP', 'IS', 'SO', 'COOL']
-grid = [
-    ['I', 'S'],
-    ['C', 'O']
-]
+grid = random_grid(1000)
 
 
 # Testing the code
@@ -123,6 +117,14 @@ grid = [
 
 ws = WordSearch(grid)
 
+# Benchmarking
+import time
+t = time.time()
+
 for word in words_to_find:
+    # t1 = time.time()
     if ws.is_present(word):
         print("found {}".format(word))
+    # print(word, time.time() - t1)
+
+print("Took ", time.time() - t, " seconds to find all words. ")

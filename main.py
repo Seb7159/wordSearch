@@ -58,12 +58,12 @@ class WordSearch(object):
 
         # Finally return the same method call for the first half and second half from both top to bottom and left to right
         if direction == 0:
-            return (self.searchWordInGrid(word[:int(mid)], i, j, direction, actual)
-                    and self.searchWordInGrid(word[int(mid):], i + addCoord, j, direction, actual)
+            return (self.searchWordInGrid(word[:int(mid)], i, j, direction)
+                    and self.searchWordInGrid(word[int(mid):], i + addCoord, j, direction)
                 )
         else:
-            return (self.searchWordInGrid(word[:int(mid)], i, j, direction, actual)
-                    and self.searchWordInGrid(word[int(mid):], i, j + addCoord, direction, actual)
+            return (self.searchWordInGrid(word[:int(mid)], i, j, direction)
+                    and self.searchWordInGrid(word[int(mid):], i, j + addCoord, direction)
                 )
 
 
@@ -99,6 +99,14 @@ grid = random_grid(1000)
 
 ws = WordSearch(grid)
 
+# Benchmarking
+import time
+t = time.time()
+
 for word in words_to_find:
+    # t1 = time.time()
     if ws.is_present(word):
         print("found {}".format(word))
+    # print(word, time.time() - t1)
+
+print("Took ", time.time() - t, " seconds to find all words. ")
