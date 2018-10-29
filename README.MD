@@ -48,11 +48,11 @@ Each processor will find out if the word is in the grid or not. The tests result
 
 ### Tests
 
-| ROW_LENGTH 	| Single processing 	| Multiprocessing 	|   	|
-|:----------:	|-------------------	|-----------------	|---	|
-| 10^2       	| 0.0468s           	| 0.0458s         	|   	|
-| 10^3       	| 1.23s             	| 0.82s           	|   	|
-| 10^4       	| 56.8995s          	| 71.6952s        	|   	|
+| Number of words 	| ROW_LENGTH 	| Single processing 	| Multiprocessing 	|
+|-----------------	|:----------:	|-------------------	|-----------------	|
+| 6               	| 10^2       	| 0.0468s           	| 0.0458s         	|
+| 6               	| 10^3       	| 1.23s             	| 0.82s           	|
+| 6               	| 10^4       	| 56.8995s          	| 66.9073s        	|
 
 #### Interesting note
 It is to be observed that for n = 10^4, single processing is faster than multiprocessing.
