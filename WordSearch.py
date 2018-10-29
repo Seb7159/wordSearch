@@ -1,9 +1,16 @@
+# WordSearch class
 class WordSearch(object):
     def __init__(self, grid):
         self.grid = grid
         self.ROW_LENGTH = len(grid)
 
-    # The 'direction' variable represents either top to bottom (0) or left to right (1)
+    # Method to search a word in the grid
+    # @param    self       the class
+    # @param    word       word to be searched for
+    # @param    i          the i index in the matrix
+    # @param    j          the j index in the matrix
+    # @param    direction  variable represents either top to bottom (0) or left to right (1)
+    # @param    bool       return True if word is empty, False if conditions are not satisfied
     def searchWordInGrid(self, word, i, j, direction):
         # Recursive heap approach
         # Return true if word is empty
@@ -67,6 +74,10 @@ class WordSearch(object):
                 )
 
 
+    # Method of searching if word is present in grid
+    # @param    self    the class
+    # @param    word    the word to be searched for
+    # @return   bool    True if found, False if not
     def is_present(self, word):
         # For each coordinates i and j in the grid, check if the word exists
         for i in range(self.ROW_LENGTH):
