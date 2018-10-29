@@ -1,5 +1,4 @@
-from multiprocessing import Pool
-import itertools
+import multiprocessing
 
 class WordSearch(object):
     def __init__(self, grid):
@@ -70,19 +69,30 @@ class WordSearch(object):
                 )
 
 
+    isPresent = False
+
+
     def wordPresent(self, params):
         i, j, word = params
         if self.searchWordInGrid(word, i, j, 0) is True or self.searchWordInGrid(word, i, j, 1) is True:
+            isPresent = True
             return True
         return False
 
+    def callback(self, x):
+        return x
+
     def is_present(self, word):
         # For each coordinates i and j in the grid, check if the word exists
+        isPresent = False
         for i in range(self.ROW_LENGTH):
             for j in range(self.ROW_LENGTH):
                 params = i, j, word
-                
-                if self.wordPresent(params) is True:
+                p = multiprocessing.Pool(processes=multiprocessing.cpu_count() - 1)
+                p.apply_async(self.wordPresent(params), params)
+                p.close()
+                p.join()
+                if isPresent is True:
                     return True
         return False
 
@@ -101,7 +111,10 @@ def random_grid(LEN):
 # Defining grid to check and words to find
 
 words_to_find = ['DINOSAUR', 'YES', 'PEXIP', 'IS', 'SO', 'COOL']
-grid = random_grid(1000)
+grid = [
+    ['I', 'S'],
+    ['C', 'O']
+]
 
 
 # Testing the code
